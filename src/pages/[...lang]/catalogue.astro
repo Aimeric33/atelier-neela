@@ -28,7 +28,7 @@ const { categories, materials } = getProductFilters(products);
   <main id="main-content">
     <section class="shell pb-12 pt-12 md:pb-16 md:pt-20">
       <h1 class="type-h1 hero-in max-w-[12ch]">{t.catalog.heading}</h1>
-      <p class="type-lead hero-in mt-25 max-w-[52ch]" style="--reveal-delay:120ms">{t.catalog.lead}</p>
+      <p class="type-lead hero-in mt-7 max-w-[52ch]" style="--reveal-delay:120ms">{t.catalog.lead}</p>
     </section>
 
     <div class="shell pb-32">
@@ -66,7 +66,7 @@ const { categories, materials } = getProductFilters(products);
 
           <div class="shrink-0">
             <label class="label mb-2.5 block" for="catalog-sort">{t.catalog.sortBy}</label>
-            <select id="catalog-sort" class="field mono w-full text-[0.8125rem] lg:w-52" data-catalog-sort>
+            <select id="catalog-sort" class="field display w-full text-[0.8125rem] lg:w-52" data-catalog-sort>
               <option value="featured">{t.catalog.sortFeatured}</option>
               <option value="price-asc">{t.catalog.sortPriceAsc}</option>
               <option value="price-desc">{t.catalog.sortPriceDesc}</option>
@@ -75,7 +75,7 @@ const { categories, materials } = getProductFilters(products);
         </div>
       </section>
 
-      <p class="mono border-t border-line py-4 text-[0.6875rem] uppercase tracking-[0.05em] text-muted" aria-live="polite">
+      <p class="display border-t border-line py-4 text-[0.6875rem] uppercase tracking-[0.05em] text-muted" aria-live="polite">
         <span data-catalog-count>{String(products.length).padStart(2, "0")}</span>&#32;<span
           data-catalog-count-label>{products.length === 1 ? countLabels.one : countLabels.other}</span
         >

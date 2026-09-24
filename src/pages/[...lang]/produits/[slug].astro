@@ -73,7 +73,7 @@ const breadcrumbSchema = {
   image={product.images[0]}
 >
   <main id="main-content" class="shell">
-    <nav class="mono flex gap-2 py-6 text-[0.6875rem] uppercase tracking-[0.05em] text-muted" aria-label={t.product.breadcrumb}>
+    <nav class="display flex gap-2 py-6 text-[0.6875rem] uppercase tracking-[0.05em] text-muted" aria-label={t.product.breadcrumb}>
       <a href={catalogHref} class="link">{t.product.catalogue}</a>
       <span aria-hidden="true">/</span>
       <span class="text-ink" aria-current="page">{product.name}</span>
@@ -130,11 +130,11 @@ const breadcrumbSchema = {
       <div class="lg:sticky lg:top-28 lg:col-span-5">
         <p class="label">{product.collection}</p>
         <h1 class="type-h2 mt-5">{product.name}</h1>
-        <p class="mono mt-5 text-xl">{formatPrice(product.price, lang)}</p>
+        <p class="display mt-5 text-xl">{formatPrice(product.price, lang)}</p>
 
         <p class="type-body mt-8 max-w-[46ch]">{product.description}</p>
 
-        <dl class="mono mt-10 border-t border-line text-[0.8125rem]">
+        <dl class="display mt-10 border-t border-line text-[0.8125rem]">
           {
             specs.map(([term, value]) => (
               <div class="flex justify-between gap-6 border-b border-line py-3">
@@ -161,7 +161,7 @@ const breadcrumbSchema = {
           </button>
         </div>
 
-        <p class="mono mt-5 text-[0.6875rem] uppercase leading-relaxed tracking-[0.05em] text-muted">
+        <p class="display mt-5 text-[0.6875rem] uppercase leading-relaxed tracking-[0.05em] text-muted">
           {t.product.deliveryNote}
         </p>
       </div>
@@ -171,7 +171,7 @@ const breadcrumbSchema = {
     <section class="mt-32 md:mt-44">
       <div class="flex flex-wrap items-end justify-between gap-x-8 gap-y-4 border-t border-line pt-8" data-reveal>
         <h2 class="type-h2 max-w-[16ch]">{t.product.relatedHeading}</h2>
-        <a href={catalogHref} class="link link-mono pb-1.5 text-muted">{t.common.allPieces}</a>
+        <a href={catalogHref} class="link link-display pb-1.5 text-muted">{t.common.allPieces}</a>
       </div>
 
       <div class="mt-12 grid gap-x-8 gap-y-14 md:mt-14 md:grid-cols-3">

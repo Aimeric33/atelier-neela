@@ -205,18 +205,20 @@ If you change `--canvas`, update `siteConfig.themeColor` to match.
 
 ## Typography
 
+Two families: **Forum** for headings and every small uppercase or numeric detail (labels, buttons, links, chips, prices, spec data), and **Figtree** for body copy, paragraphs and form input. They are exposed as `--font-display` and `--font-body` in `@theme inline`, which also gives you the Tailwind utilities `font-display` and `font-body`. Every `h1`–`h6` is set in Forum by default.
+
 The scale is fluid and defined as component classes rather than utilities, so headings carry one class instead of three:
 
-| Class        | Use                                             |
-| ------------ | ----------------------------------------------- |
-| `.type-hero` | Homepage and 404 headline                       |
-| `.type-h1`   | Page headlines                                  |
-| `.type-h2`   | Section headlines                               |
-| `.type-h3`   | Card and column headings                        |
-| `.type-lead` | Intro paragraph under a headline                |
-| `.type-body` | Body copy                                       |
-| `.label`     | Mono caption — section names, spec terms        |
-| `.mono`      | Mono with tabular numerals — prices, dimensions |
+| Class        | Use                                                |
+| ------------ | -------------------------------------------------- |
+| `.type-hero` | Homepage and 404 headline (Forum)                  |
+| `.type-h1`   | Page headlines (Forum)                             |
+| `.type-h2`   | Section headlines (Forum)                          |
+| `.type-h3`   | Card and column headings (Forum)                   |
+| `.type-lead` | Intro paragraph under a headline (Figtree)         |
+| `.type-body` | Body copy (Figtree)                                |
+| `.label`     | Small uppercase caption — section names, spec terms |
+| `.display`   | Forum with tabular numerals — prices, dimensions   |
 
 Each display class sets its own `font-size`, `line-height` and `letter-spacing` with `clamp()`, so they scale between the smallest phone and the widest desktop without breakpoints. Tune the middle value of the clamp to change how aggressively type scales.
 
@@ -229,7 +231,7 @@ Each display class sets its own `font-size`, `line-height` and `letter-spacing` 
 Defined in the `@layer components` block of [src/styles.css](./src/styles.css):
 
 - `.btn` with `.btn-primary` or `.btn-outline` — the accent panel wipes up from the baseline on hover and focus. `.btn-outline` recolours its own rule to match, so the fill never buries the border.
-- `.link` — an underline that wipes in from the left, drawn with a background gradient so it never affects layout. `.link-mono` adds the small uppercase mono treatment. The rule is painted across the element box, so the class sets `width: fit-content` to hug its text wherever it has been blockified; that is ignored while the link is inline. To centre a blockified one, add `mx-auto` rather than `w-full`.
+- `.link` — an underline that wipes in from the left, drawn with a background gradient so it never affects layout. `.link-display` adds the small uppercase Forum treatment. The rule is painted across the element box, so the class sets `width: fit-content` to hug its text wherever it has been blockified; that is ignored while the link is inline. To centre a blockified one, add `mx-auto` rather than `w-full`.
 - `.chip` — catalogue filter, styled from `aria-pressed`.
 - `.field` and `.field-label` — underlined inputs and selects. The underline turns accent on focus.
 - `.shell` — the centred page container. Applies `--shell` and `--gutter`.
@@ -300,7 +302,7 @@ Above-the-fold images — the homepage hero, the studio photograph, the first pr
 - `product` — required.
 - `eager` — load the image immediately. Above the fold only.
 - `headingLevel` — `"h2"` or `"h3"`. Set it so the card does not break the page's heading order; the product page passes `"h3"` because its related grid sits under an `h2`.
-- `index` — renders a mono reference number beside the name.
+- `index` — renders a reference number in the display face beside the name.
 - `revealDelay` — milliseconds of stagger for the scroll reveal.
 
 The meta row's top rule turns accent on hover. That is the whole hover affordance — the theme has no arrow glyphs.
@@ -309,14 +311,14 @@ The meta row's top rule turns accent on hover. That is the whole hover affordanc
 
 Four WOFF2 files in [src/assets/fonts](./src/assets/fonts), declared at the top of [src/styles.css](./src/styles.css):
 
-- `archivo-latin-wght-normal.woff2` and the latin-ext pair — one variable file covering weights 100–900
-- `ibm-plex-mono-latin-400-normal.woff2` and the latin-ext pair — regular only
+- `figtree-latin-wght-normal.woff2` and the latin-ext pair — one variable file covering weights 300–900
+- `forum-latin-400-normal.woff2` and the latin-ext pair — regular only (Forum ships a single weight)
 
-Each `@font-face` carries a `unicode-range`, so latin-ext is only fetched by pages that need it. `Kō` is a latin-ext character, which is why the wordmark pulls that subset.
+Each `@font-face` carries a `unicode-range`, so latin-ext is only fetched by pages that need it. `Kō` is a latin-ext character, which is why the wordmark pulls that subset. Both subsets are required: the latin-ext files contain no `a–z` and no French accents, so a family declared with only its latin-ext file silently falls back to the system font.
 
-The latin Archivo file is preloaded in [src/layouts/BaseLayout.astro](./src/layouts/BaseLayout.astro) by importing it with `?url`, which resolves to the same hashed asset the stylesheet references. Only that one file is preloaded — it paints the hero.
+The two latin files are preloaded in [src/layouts/BaseLayout.astro](./src/layouts/BaseLayout.astro) by importing them with `?url`, which resolves to the same hashed asset the stylesheet references. Both paint above the fold: Figtree the intro copy, Forum the headline and navigation.
 
-To swap a family, drop the new WOFF2 into that folder, update the `@font-face` blocks and `--font-sans` or `--font-mono` in `@theme inline`, and update the preload import. To drop webfonts entirely, delete the `@font-face` blocks and point the tokens at system stacks; the fallback stacks are already chosen to match the metrics closely.
+To swap a family, drop the new WOFF2 files (latin **and** latin-ext, e.g. from [Fontsource](https://fontsource.org)) into that folder, update the `@font-face` blocks and `--font-body` or `--font-display` in `@theme inline`, and update the preload imports. Declare variable files with `format("woff2-variations")` and a weight range (`font-weight: 300 900`), static files with `format("woff2")` and a single weight.
 
 ## Pages and SEO
 

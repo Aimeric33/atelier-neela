@@ -1,6 +1,7 @@
 ---
 import "../styles.css";
-import archivoLatin from "@/assets/fonts/archivo-latin-wght-normal.woff2?url";
+import figtreeLatin from "@/assets/fonts/figtree-latin-wght-normal.woff2?url";
+import forumLatin from "@/assets/fonts/forum-latin-400-normal.woff2?url";
 import SiteFooter from "@/components/SiteFooter.astro";
 import SiteHeader from "@/components/SiteHeader.astro";
 import { siteConfig } from "@/config/site";
@@ -76,7 +77,8 @@ const ogImage = new URL(social.src, origin).href;
     {noindex && <meta name="robots" content="noindex,nofollow" />}
     {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />)}
 
-    <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={figtreeLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={forumLatin} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

@@ -9,13 +9,13 @@
 
 **Live preview:** https://atelier-ko-topaz.vercel.app/
 
-Atelier Kō is an Astro theme for a small furniture workshop or any craft-led catalogue where the pieces are few and the photography does the selling. The design is cool and architectural: gallery-grey surfaces, one grotesk cut large and tracked tight, technical mono for reference numbers and dimensions, and a single oiled-walnut accent that picks up the timber in the photography. Structure is drawn with hairlines instead of cards and shadows — nothing is rounded, nothing floats, and no section is introduced by a caption above its headline. Motion is deliberate and quiet: sections rise as they enter, image frames unmask upward, section rules draw themselves left to right, and the hero drifts against the scroll. Content is Markdown validated by Astro content collections, the studio name, navigation, footer, contact and commerce defaults come from one config file, and the output is fully static — no framework runtime, and every enhancement degrades to working HTML.
+Atelier Kō is an Astro theme for a small furniture workshop or any craft-led catalogue where the pieces are few and the photography does the selling. The design is cool and architectural: gallery-grey surfaces, Forum for headlines, labels, prices and dimensions, Figtree for running text, and a single oiled-walnut accent that picks up the timber in the photography. Structure is drawn with hairlines instead of cards and shadows — nothing is rounded, nothing floats, and no section is introduced by a caption above its headline. Motion is deliberate and quiet: sections rise as they enter, image frames unmask upward, section rules draw themselves left to right, and the hero drifts against the scroll. Content is Markdown validated by Astro content collections, the studio name, navigation, footer, contact and commerce defaults come from one config file, and the output is fully static — no framework runtime, and every enhancement degrades to working HTML.
 
 ## Features
 
 - Editorial homepage: a split hero with the headline set against a drifting full-height photograph, a spec band, a numbered "in the workshop" grid, a full-width feature piece with its own spec table, and a three-timber panel
 - Catalogue with client-side category and material filters, price sorting, a live result count, and an empty state when a combination matches nothing
-- Static product pages with a thumbnail-switched gallery, a mono spec table, a quantity stepper, related pieces, and Product plus BreadcrumbList JSON-LD
+- Static product pages with a thumbnail-switched gallery, a spec table, a quantity stepper, related pieces, and Product plus BreadcrumbList JSON-LD
 - Slide-in cart drawer that opens on add, with per-line quantity steppers, a live subtotal, focus trap and Escape — driven entirely by two data attributes, and degrading to a plain link to the cart page without JavaScript
 - LocalStorage cart with a full cart page, live order summary, and a two-step checkout preview with formatted card, expiry and CVC inputs
 - Centred newsletter band in the footer, so it reaches every page instead of occupying a homepage section
@@ -23,7 +23,7 @@ Atelier Kō is an Astro theme for a small furniture workshop or any craft-led ca
 - Scroll motion built on one IntersectionObserver and four reveal variants — rise, fade, image unmask, and self-drawing rule — each element unobserved after it fires
 - Scroll-driven CSS for the settling header and hero parallax, with no JavaScript at all where the browser supports `animation-timeline`, and a styled fallback where it does not
 - Central theme config for studio name, navigation, footer columns, contact address, currency, delivery rate, and which products are promoted
-- Self-hosted variable Archivo and IBM Plex Mono, latin and latin-ext only, four WOFF2 files totalling about 93 KB and nothing requested from a third-party origin
+- Self-hosted Figtree (variable) and Forum, latin and latin-ext only, four WOFF2 files totalling about 75 KB and nothing requested from a third-party origin
 - Design tokens for every surface, text, accent and hairline colour, plus a small set of component classes for buttons, links, chips, fields and captions
 - Astro image pipeline throughout: WebP, explicit dimensions, eager above the fold and lazy below
 - Canonical URLs, Open Graph and Twitter cards with image dimensions, a configurable fallback share card, Organization, Product and BreadcrumbList JSON-LD, sitemap generation, and a dynamic `robots.txt`
@@ -106,7 +106,7 @@ French is the default language and is served from the root. The same routes exis
 
 ## Typography
 
-The theme self-hosts two families and nothing else: [Archivo](https://fonts.google.com/specimen/Archivo) as a variable font covering every weight it uses, and [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) at 400 for labels and spec data. Both are split into latin and latin-ext subsets, four WOFF2 files in total, and the latin Archivo file is preloaded because it paints the hero. See [Fonts](./CUSTOMIZATION.md#fonts) to swap or remove them.
+The theme self-hosts two families and nothing else: [Forum](https://fonts.google.com/specimen/Forum) at 400 for headings, labels, buttons, prices and spec data, and [Figtree](https://fonts.google.com/specimen/Figtree) as a variable font for body copy. Both are split into latin and latin-ext subsets, four WOFF2 files in total, and both latin files are preloaded because they paint above the fold. See [Fonts](./CUSTOMIZATION.md#fonts) to swap or remove them.
 
 ## License
 

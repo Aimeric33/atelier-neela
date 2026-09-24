@@ -68,7 +68,7 @@ const drawerData = {
   >
     <div class="cart-panel-head">
       <h2 id="cart-drawer-heading" class="text-[0.9375rem] font-semibold uppercase tracking-[-0.01em]">
-        {t.common.cart} <span class="mono text-[0.6875rem] font-normal text-muted" data-cart-count>00</span>
+        {t.common.cart} <span class="display text-[0.6875rem] font-normal text-muted" data-cart-count>00</span>
       </h2>
       <button
         type="button"
@@ -97,13 +97,13 @@ const drawerData = {
     <div class="cart-panel-foot" data-cart-drawer-foot hidden>
       <div class="flex items-baseline justify-between gap-4">
         <span class="label">{t.cartDrawer.subtotal}</span>
-        <span class="mono text-lg" data-cart-drawer-subtotal>{formatPrice(0, lang)}</span>
+        <span class="display text-lg" data-cart-drawer-subtotal>{formatPrice(0, lang)}</span>
       </div>
-      <p class="mono mt-2 text-[0.625rem] uppercase tracking-[0.05em] text-muted">
+      <p class="display mt-2 text-[0.625rem] uppercase tracking-[0.05em] text-muted">
         {t.cartDrawer.deliveryNote}
       </p>
       <a href={localizePath(routes.cart, lang)} class="btn btn-primary mt-5 w-full">{t.cartDrawer.checkout}</a>
-      <button type="button" class="link link-mono mx-auto mt-4 block text-muted" data-cart-close>
+      <button type="button" class="link link-display mx-auto mt-4 block text-muted" data-cart-close>
         {t.cartDrawer.continue}
       </button>
     </div>
@@ -155,9 +155,9 @@ const drawerData = {
             <div class="flex justify-between gap-3">
               <div class="min-w-0">
                 <a class="link block truncate text-[0.9375rem] font-medium" data-line-name></a>
-                <p class="mono mt-1 truncate text-[0.625rem] uppercase tracking-[0.05em] text-muted" data-line-meta></p>
+                <p class="display mt-1 truncate text-[0.625rem] uppercase tracking-[0.05em] text-muted" data-line-meta></p>
               </div>
-              <span class="mono shrink-0 text-[0.8125rem]" data-line-price></span>
+              <span class="display shrink-0 text-[0.8125rem]" data-line-price></span>
             </div>
             <div class="flex items-center justify-between gap-3">
               <div class="qty qty-sm">
@@ -165,7 +165,7 @@ const drawerData = {
                 <output data-line-quantity></output>
                 <button type="button" data-line-increase>+</button>
               </div>
-              <button type="button" class="link link-mono text-muted" data-line-remove></button>
+              <button type="button" class="link link-display text-muted" data-line-remove></button>
             </div>
           </div>`;
 
