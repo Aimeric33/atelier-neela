@@ -29,10 +29,10 @@ export interface FooterColumn {
 
 export const siteConfig = {
   /** Studio name. Used in the wordmark, metadata, JSON-LD and the footer. */
-  name: "Atelier Kō",
+  name: "Atelier Neela",
 
   /** One-line positioning statement. Emitted as the Organization slogan. */
-  tagline: { fr: "Du mobilier, fait main", en: "Furniture, made by hand" } satisfies Localized,
+  tagline: { fr: "Créateur de souvenirs et émotions uniques", en: "Crafting unique memories and emotions" } satisfies Localized,
 
   /** Default meta description for pages that do not set their own. */
   description: {
@@ -42,8 +42,8 @@ export const siteConfig = {
 
   /** Default <title> for pages that do not set their own. */
   defaultTitle: {
-    fr: "Atelier Kō — Mobilier fait main, venu des forêts du Nord",
-    en: "Atelier Kō — Hand-made furniture from the northern woods",
+    fr: "Atelier Neela — Créateur de souvenirs et émotions uniques",
+    en: "Atelier Neela — Crafting unique memories and emotions",
   } satisfies Localized,
 
   /** Contact address, linked in the footer and on the studio page. */
@@ -51,8 +51,8 @@ export const siteConfig = {
 
   /** Used for Organization JSON-LD. */
   location: {
-    region: "Småland",
-    country: "SE",
+    region: "Gironde",
+    country: "FR",
   },
 
   /** Browser theme colour. Keep in step with `--canvas` in src/styles.css. */
@@ -68,22 +68,22 @@ export const siteConfig = {
     width: 1200,
     height: 630,
     alt: {
-      fr: "Atelier Kō — mobilier sculpté à la main, venu des forêts du Nord",
-      en: "Atelier Kō — hand-carved furniture from the northern woods",
+      fr: "Atelier Neela — Créateur de souvenirs et émotions uniques",
+      en: "Atelier Neela — Crafting unique memories and emotions",
     } satisfies Localized,
   },
 
   /** Primary navigation, in order. Also drives the mobile menu. */
   navigation: [
-    { label: { fr: "Accueil", en: "Index" }, href: routes.home },
+    { label: { fr: "Accueil", en: "Home" }, href: routes.home },
     { label: { fr: "Catalogue", en: "Catalogue" }, href: routes.catalog },
-    { label: { fr: "Atelier", en: "Studio" }, href: routes.studio },
+    { label: { fr: "Atelier", en: "Atelier" }, href: routes.studio },
   ] satisfies NavItem[],
 
   /** Short paragraph in the first footer column. */
   footerBlurb: {
-    fr: "Un atelier de deux personnes dans le Småland, en Suède. Chêne, frêne et noyer massifs — débités, assemblés et finis à la main.",
-    en: "A two-person workshop in Småland, Sweden. Solid oak, ash and walnut — cut, joined and finished by hand.",
+    fr: "Un atelier de deux personnes au nord de Bordeaux. Des créations fait main et personnalisables pour tous vos événements.",
+    en: "A two-person studio at the north of Bordeaux. Handmade, customizable creations for all your events.",
   } satisfies Localized,
 
   /** Footer link columns. Add or remove columns freely. */
@@ -92,7 +92,7 @@ export const siteConfig = {
       heading: { fr: "Catalogue", en: "Catalogue" },
       links: [
         { label: { fr: "Toutes les pièces", en: "All pieces" }, href: routes.catalog },
-        { label: { fr: "L'atelier", en: "The studio" }, href: routes.studio },
+        { label: { fr: "L'atelier", en: "The atelier" }, href: routes.studio },
         { label: { fr: "Votre panier", en: "Your cart" }, href: routes.cart },
       ],
     },
@@ -113,9 +113,9 @@ export const siteConfig = {
   /** Commerce defaults. Prices are formatted in each locale's conventions. */
   commerce: {
     /** ISO 4217 currency code. */
-    currency: "USD",
+    currency: "EUR",
     /** Flat delivery charge added once when the cart is not empty. */
-    shippingFlatRate: 120,
+    shippingFlatRate: 50,
   },
 
   /**

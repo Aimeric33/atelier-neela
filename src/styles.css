@@ -219,6 +219,7 @@
   /* Sized to sit in a column beside the hero image rather than span the page. */
   .type-hero {
     font-size: clamp(2.75rem, 4.9vw, 4.5rem);
+    text-transform: uppercase;
     line-height: 0.95;
     letter-spacing: -0.038em;
     font-family: var(--font-display);
@@ -255,7 +256,7 @@
 
   .type-lead {
     font-size: clamp(1.0625rem, 1.35vw, 1.375rem);
-    line-height: 1.5;
+    line-height: 1.4;
     letter-spacing: -0.011em;
     color: var(--muted);
     text-wrap: pretty;

@@ -1,8 +1,12 @@
 ---
 import { Image } from "astro:assets";
+import HeroSlideshow from "@/components/HeroSlideshow.astro";
 import ProductCard from "@/components/ProductCard.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import heroImg from "@/assets/atelier-hero.jpg";
+import handsImg from "@/assets/atelier-hands.jpg";
+import workshopImg from "@/assets/atelier-workshop.jpg";
+import monolithImg from "@/assets/p-monolith-1.jpg";
 import { siteConfig } from "@/config/site";
 import { formatPrice, getProducts, requireProduct } from "@/data/products";
 import { localeStaticPaths, localizePath, routes, useTranslations, type Locale } from "@/i18n";
@@ -33,6 +37,12 @@ const facts = [
 
 const materials = t.home.materials;
 
+// Hero background slides, in order. Alt text comes from the dictionary.
+const heroSlides = [heroImg, workshopImg, handsImg, monolithImg].map((src, index) => ({
+  src,
+  alt: t.home.heroSlides[index],
+}));
+
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -54,8 +64,14 @@ const organizationSchema = {
 >
   <main id="main-content">
     {/* ---------------------------------------------------------------- Hero */}
-    <section class="shell grid items-center gap-x-12 gap-y-10 pb-4 pt-8 md:grid-cols-12 md:pb-10 md:pt-12">
-      <div class="hero-in md:col-span-5">
+    <HeroSlideshow
+      slides={heroSlides}
+      thumbLabel={t.home.showSlide}
+      autoplay={6}
+      pauseLabel={t.home.pauseSlideshow}
+      playLabel={t.home.playSlideshow}
+    >
+      <div class="hero-in">
         <h1 class="type-hero">{t.home.heroTitle}</h1>
         <p class="type-lead mt-7 max-w-[42ch]">{t.home.heroLead}</p>
         <div class="mt-9 flex flex-wrap gap-3">
@@ -63,26 +79,7 @@ const organizationSchema = {
           <a href={localizePath(routes.studio, lang)} class="btn btn-outline">{t.home.ctaWorkshop}</a>
         </div>
       </div>
-
-      <figure class="hero-in md:col-span-7" style="--reveal-delay:120ms">
-        <div class="overflow-hidden bg-surface">
-          <Image
-            src={heroImg}
-            alt={t.home.heroAlt}
-            width={1600}
-            height={1400}
-            format="webp"
-            loading="eager"
-            decoding="sync"
-            class="parallax aspect-[4/3] w-full object-cover object-right md:aspect-[8/7]"
-          />
-        </div>
-        <figcaption class="display mt-3 flex justify-between gap-4 text-[0.625rem] uppercase tracking-[0.05em] text-muted">
-          <span>{t.home.heroCaption[0]}</span>
-          <span>{t.home.heroCaption[1]}</span>
-        </figcaption>
-      </figure>
-    </section>
+    </HeroSlideshow>
 
     {/* Spec band */}
     <div class="mt-14 border-y border-line md:mt-20">

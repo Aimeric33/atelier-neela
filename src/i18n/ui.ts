@@ -48,13 +48,21 @@ const fr = {
   },
   home: {
     description:
-      "Un petit catalogue d'assises, de tables et de rangements. Chêne, frêne et noyer massifs, fabriqués à la main sur commande dans le Småland, en Suède.",
-    heroTitle: "Des pièces sculptées à la main, venues des forêts du Nord",
+      "Nous créons des pièces personnalisées pour vos mariages, anniversaires, baptêmes pensées, imaginées et réalisées avec soin pour que chaque détail vous ressemble.",
+    heroTitle: "Créateur de souvenirs et émotions uniques",
     heroLead:
-      "Un catalogue court et patient d'assises, de tables et de rangements — chêne, frêne et noyer massifs, façonnés à la main et construits pour survivre à la pièce qui les a vus naître.",
+      "Nous créons des pièces personnalisées pour vos mariages, anniversaires, baptêmes pensées, imaginées et réalisées avec soin pour que chaque détail vous ressemble.",
     ctaWorkshop: "L'atelier",
-    heroAlt: "Fauteuil sculptural en noyer sculpté à la main, dans un atelier baigné de soleil",
-    heroCaption: ["N° 04 — Fauteuil Arvid", "Noyer massif · 2025"],
+    /** Alt text of each hero slide, in slide order. */
+    heroSlides: [
+      "Fauteuil sculptural en noyer sculpté à la main, dans un atelier baigné de soleil",
+      "Atelier d'ébénisterie scandinave ensoleillé, avec des outils à main et une chaise à moitié terminée",
+      "Gros plan sur les mains d'un artisan rabotant une pièce de chêne clair",
+      "Banc Monolith en chêne débité sur quartier",
+    ],
+    showSlide: "Afficher l'image {i}",
+    pauseSlideshow: "Mettre le diaporama en pause",
+    playSlideshow: "Relancer le diaporama",
     facts: { founded: "Fondé en", country: "Suède", pieces: "Pièces", timbers: "Essences" },
     featuredHeading: "Quelques pièces, presque prêtes",
     soloHeading: "Une planche, aucune quincaillerie",
@@ -254,13 +262,20 @@ const en: Dictionary = {
   },
   home: {
     description:
-      "A small catalogue of seating, tables and storage. Solid oak, ash and walnut, hand-built to order in Småland, Sweden.",
+      "We create custom pieces for your weddings, birthdays and christenings, thoughtfully designed, imagined and crafted with care so that every detail feels like you.",
     heroTitle: "Hand-carved pieces from the northern woods",
     heroLead:
       "A small, slow catalogue of seating, tables and storage — solid oak, ash and walnut, shaped by hand and built to outlast the room they were made for.",
     ctaWorkshop: "The workshop",
-    heroAlt: "Hand-carved sculptural walnut lounge chair in a sunlit atelier",
-    heroCaption: ["No. 04 — Arvid Lounge", "Solid walnut · 2025"],
+    heroSlides: [
+      "Hand-carved sculptural walnut lounge chair in a sunlit atelier",
+      "Sunlit Scandinavian woodworking atelier with hand tools and a half-finished chair",
+      "Close-up of a craftsman's hands planing a piece of pale oak",
+      "Monolith Bench in quarter-sawn oak",
+    ],
+    showSlide: "Show image {i}",
+    pauseSlideshow: "Pause the slideshow",
+    playSlideshow: "Play the slideshow",
     facts: { founded: "Founded", country: "Sweden", pieces: "Pieces", timbers: "Timbers" },
     featuredHeading: "A few pieces, close to ready",
     soloHeading: "One plank, no hardware",
