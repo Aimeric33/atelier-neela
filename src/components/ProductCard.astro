@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { formatPrice, type Product } from "@/data/products";
+import { localizePath, routes } from "@/i18n";
 
 interface Props {
   product: Product;
@@ -20,7 +21,7 @@ const reference = index === undefined ? undefined : String(index + 1).padStart(2
 ---
 
 <a
-  href={`/products/${product.slug}`}
+  href={localizePath(routes.product(product.slug), product.lang)}
   class="product-card group block"
   data-product-card
   data-reveal
@@ -47,7 +48,7 @@ const reference = index === undefined ? undefined : String(index + 1).padStart(2
         <p class="mt-1 truncate text-[0.8125rem] text-muted">{product.shortDescription}</p>
       </div>
     </div>
-    <span class="mono shrink-0 text-[0.8125rem]">{formatPrice(product.price)}</span>
+    <span class="mono shrink-0 text-[0.8125rem]">{formatPrice(product.price, product.lang)}</span>
   </div>
 </a>
 

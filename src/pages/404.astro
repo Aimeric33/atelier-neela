@@ -1,22 +1,24 @@
 ---
+/**
+ * A single static 404 serves every locale, so it renders in the default
+ * language. BaseLayout reads the locale from the URL ("/404" → French).
+ */
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { pageTitle } from "@/config/site";
+import { defaultLocale, localizePath, routes, useTranslations } from "@/i18n";
+
+const lang = defaultLocale;
+const t = useTranslations(lang);
 ---
 
-<BaseLayout
-  title={pageTitle("Page not found")}
-  description="The page you're looking for doesn't exist or has been moved."
-  noindex={true}
->
+<BaseLayout title={pageTitle(t.notFound.title)} description={t.notFound.description} noindex={true}>
   <main id="main-content" class="shell flex min-h-[70vh] flex-col justify-center py-24">
-    <p class="mono hero-in text-[0.6875rem] uppercase tracking-[0.05em] text-accent">Error 404</p>
-    <h1 class="type-hero hero-in mt-6 max-w-[14ch]" style="--reveal-delay:90ms">This page isn't in the catalogue</h1>
-    <p class="type-lead hero-in mt-8 max-w-[46ch]" style="--reveal-delay:180ms">
-      The page you're looking for doesn't exist, or it has been moved. The six pieces we do make are all here.
-    </p>
+    <p class="mono hero-in text-[0.6875rem] uppercase tracking-[0.05em] text-accent">{t.notFound.eyebrow}</p>
+    <h1 class="type-hero hero-in mt-6 max-w-[14ch]" style="--reveal-delay:90ms">{t.notFound.heading}</h1>
+    <p class="type-lead hero-in mt-8 max-w-[46ch]" style="--reveal-delay:180ms">{t.notFound.lead}</p>
     <div class="hero-in mt-10 flex flex-wrap gap-3" style="--reveal-delay:260ms">
-      <a href="/catalog" class="btn btn-primary">Back to the catalogue</a>
-      <a href="/" class="btn btn-outline">Home</a>
+      <a href={localizePath(routes.catalog, lang)} class="btn btn-primary">{t.notFound.back}</a>
+      <a href={localizePath(routes.home, lang)} class="btn btn-outline">{t.notFound.home}</a>
     </div>
   </main>
 </BaseLayout>

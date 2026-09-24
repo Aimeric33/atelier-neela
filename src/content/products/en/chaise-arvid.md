@@ -9,9 +9,9 @@ dimensions: W 54 × D 56 × H 92 cm
 finish: Soap-Treated
 leadTime: 6–8 Weeks
 images:
-  - ../../assets/p-arvid-3.jpg
-  - ../../assets/p-arvid-1.jpg
-  - ../../assets/p-arvid-2.jpg
+  - ../../../assets/p-arvid-3.jpg
+  - ../../../assets/p-arvid-1.jpg
+  - ../../../assets/p-arvid-2.jpg
 order: 2
 ---
 

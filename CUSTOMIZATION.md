@@ -2,6 +2,24 @@
 
 Use this guide when adapting Atelier Kō for a real workshop or catalogue.
 
+## Languages
+
+The site is bilingual. French is the default locale, served from the root (`/catalogue`), and English lives under `/en/` (`/en/catalogue`). Both languages share the same French URLs. The setup has five parts:
+
+- **Routing.** The `i18n` block in [astro.config.mjs](./astro.config.mjs) and `locales` / `defaultLocale` in [src/i18n/index.ts](./src/i18n/index.ts). Keep the two in step.
+- **Pages.** Every page lives in [src/pages/[...lang]/](./src/pages/[...lang]/) and calls `localeStaticPaths()`, so one file renders both languages. Components read the locale from the URL with `getLocale(Astro.url)` and build links with `localizePath(path, lang)`. The 404 page stays at the root and renders in French.
+- **URLs.** Page paths are defined once in `routes` in [src/i18n/index.ts](./src/i18n/index.ts), and every internal link reads from it. To rename a page, rename its file in `src/pages/[...lang]/` and update its entry in `routes`.
+- **Interface copy.** [src/i18n/ui.ts](./src/i18n/ui.ts) holds one dictionary per locale. `fr` defines the shape, so if a key is missing from `en`, type-checking fails. Studio-wide copy (tagline, description, navigation, footer) is written as `{ fr, en }` objects in [src/config/site.ts](./src/config/site.ts).
+- **Products.** Each language has its own folder: `src/content/products/fr/` and `src/content/products/en/`. Both translations of a piece share the same filename, which is also its slug. That keeps the cart and `siteConfig.featured` valid in both languages.
+
+The header shows a link to the same page in the other language. Every indexable page emits `hreflang` alternates, and the sitemap lists both versions.
+
+To add a language, for example German:
+1. Add it to both locale lists.
+2. Add a `de` dictionary and a `localeMeta` entry.
+3. Add `de` to every `{ fr, en }` object in the site config.
+4. Create `src/content/products/de/`.
+
 ## Site Settings
 
 Edit [src/config/site.ts](./src/config/site.ts) first. It holds the studio name, tagline, default title and description, contact address, region, theme colour, navigation, footer columns and blurb, commerce defaults, and which products the theme promotes. Components read from it rather than hardcoding copy, so renaming the studio does not mean editing markup.
@@ -30,11 +48,13 @@ SITE=https://your-domain.com npm run build
 
 ```ts
 navigation: [
-  { label: "Index", href: "/" },
-  { label: "Catalogue", href: "/catalog" },
-  { label: "Studio", href: "/about" },
+  { label: { fr: "Accueil", en: "Index" }, href: routes.home },
+  { label: { fr: "Catalogue", en: "Catalogue" }, href: routes.catalog },
+  { label: { fr: "Atelier", en: "Studio" }, href: routes.studio },
 ];
 ```
+
+Labels are given once per locale and `href` is the unprefixed path; the header adds `/en` for English pages. See [Languages](#languages).
 
 The active item is matched by prefix, except `/`, which matches exactly. It is marked with `aria-current="page"` and an accent rule beneath the label — colour is never the only signal.
 
@@ -48,13 +68,13 @@ The grid in [src/components/SiteFooter.astro](./src/components/SiteFooter.astro)
 
 ## Featured Products
 
-`siteConfig.featured` decides which pieces are promoted. Each value is a filename in [src/content/products](./src/content/products) without the `.md`:
+`siteConfig.featured` decides which pieces are promoted. Each value is a filename in [src/content/products/&lt;locale&gt;](./src/content/products) without the `.md`:
 
 ```ts
 featured: {
-  homepageGrid: ["arvid-chair", "low-plinth-table", "tora-desk"],
-  homepageSolo: "monolith-bench",
-  mobileMenu: "oken-stool",
+  homepageGrid: ["chaise-arvid", "table-basse-plinth", "bureau-tora"],
+  homepageSolo: "banc-monolith",
+  mobileMenu: "tabouret-oken",
 }
 ```
 
@@ -62,7 +82,7 @@ These resolve through `requireProduct()` in [src/data/products.ts](./src/data/pr
 
 ## Product Frontmatter
 
-Products live in [src/content/products](./src/content/products), one Markdown file per piece. The filename becomes the slug. The schema is in [src/content.config.ts](./src/content.config.ts).
+Products live in [src/content/products](./src/content/products), with one folder per language (`fr/`, `en/`) and one Markdown file per piece. The filename becomes the slug and is shared by both translations. The schema is in [src/content.config.ts](./src/content.config.ts).
 
 ```md
 ---
@@ -92,7 +112,7 @@ The Markdown body is the long description, used on the product page, in the meta
 
 ## Catalogue Filters and Sorting
 
-[src/pages/catalog.astro](./src/pages/catalog.astro) builds its chips from `getProductFilters()`, which collects the distinct `category` and `material` values across all products. Filtering, sorting, the result count, and the empty state are handled by one inline script that toggles the `hidden` attribute and reorders nodes in place — no re-rendering and no framework.
+[src/pages/[...lang]/catalogue.astro](./src/pages/[...lang]/catalogue.astro) builds its chips from `getProductFilters()`, which collects the distinct `category` and `material` values across all products. Filtering, sorting, the result count, and the empty state are handled by one inline script that toggles the `hidden` attribute and reorders nodes in place — no re-rendering and no framework.
 
 Active chips are marked with `aria-pressed`, and the `.chip` styles in [src/styles.css](./src/styles.css) key off that attribute rather than a separate class, so state and styling cannot drift apart.
 
@@ -106,13 +126,12 @@ Commerce defaults come from `siteConfig.commerce`:
 
 ```ts
 commerce: {
-  locale: "en-US",
   currency: "USD",
   shippingFlatRate: 120,
 }
 ```
 
-`locale` and `currency` feed `formatPrice()` in [src/data/products.ts](./src/data/products.ts) for server-rendered prices. [src/pages/cart.astro](./src/pages/cart.astro) serializes the same three values into its `#cart-data` JSON payload alongside the product list, so the client-side cart formats prices identically without hardcoding anything.
+`currency` feeds `formatPrice()` in [src/data/products.ts](./src/data/products.ts) for server-rendered prices, formatted with the current language's conventions (`localeMeta` in [src/i18n/index.ts](./src/i18n/index.ts)). [src/pages/[...lang]/panier.astro](./src/pages/[...lang]/panier.astro) serializes the same values into its `#cart-data` JSON payload alongside the product list, so the client-side cart formats prices identically without hardcoding anything.
 
 Each cart row is cloned from a `<template>` rendered per product, which keeps the Astro image pipeline in charge of the thumbnails while the row itself is built on the client.
 
@@ -127,7 +146,7 @@ Open and close is delegated from [src/layouts/BaseLayout.astro](./src/layouts/Ba
 - `data-cart-toggle` on any element opens or closes the panel.
 - `data-cart-close` on any element inside it closes it.
 
-Pages never wire up their own handlers. The header cart is a real `<a href="/cart">` that the script upgrades, so with JavaScript off it stays an ordinary link to the cart page and the drawer never appears.
+Pages never wire up their own handlers. The header cart is a real link to `/panier` that the script upgrades, so with JavaScript off it stays an ordinary link to the cart page and the drawer never appears.
 
 Because the stored cart holds only `{ slug, quantity }`, the drawer ships a small catalogue snapshot — name, price, material, thumbnail — built in its frontmatter. Thumbnails go through `getImage()` at build time, so the panel is on optimized WebP without an `<Image>` per line.
 
@@ -136,7 +155,7 @@ Because the stored cart holds only `{ slug, quantity }`, the drawer ships a smal
 Any control can add to the cart. Give it `data-add-to-cart="<slug>"` and, optionally, `data-add-quantity`:
 
 ```html
-<button type="button" data-add-to-cart="arvid-chair" data-add-quantity="1">Add to cart</button>
+<button type="button" data-add-to-cart="chaise-arvid" data-add-quantity="1">Add to cart</button>
 ```
 
 The delegated handler in `BaseLayout` reads both, adds the line, and opens the drawer — the drawer is the confirmation, so there is no label that swaps to "Added" and back.

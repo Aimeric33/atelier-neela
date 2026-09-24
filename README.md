@@ -85,7 +85,7 @@ See [CUSTOMIZATION.md](./CUSTOMIZATION.md) for the full guide: theme tokens and 
 
 ## Content
 
-Products live in [src/content/products](./src/content/products), one Markdown file per piece. The filename becomes the URL slug, so `arvid-chair.md` is served at `/products/arvid-chair`. Frontmatter is validated by the schema in [src/content.config.ts](./src/content.config.ts), and categories and materials are derived from the files themselves rather than maintained in a second list.
+Products live in [src/content/products](./src/content/products), in one folder per language (`fr/`, `en/`), with one Markdown file per piece. The filename becomes the URL slug, so `fr/chaise-arvid.md` is served at `/produits/chaise-arvid` and `en/chaise-arvid.md` at `/en/produits/chaise-arvid`. Frontmatter is validated by the schema in [src/content.config.ts](./src/content.config.ts), and categories and materials are derived from the files themselves rather than maintained in a second list.
 
 Product images belong in [src/assets](./src/assets) so Astro can optimize them. Use `public/` only for files that must be served byte-for-byte.
 
@@ -93,13 +93,15 @@ Replace the demo catalogue, prices, photography, and studio copy before publishi
 
 ## Pages
 
+French is the default language and is served from the root. The same routes exist in English under `/en/` (`/en/catalogue`). Paths are defined once in `routes` in [src/i18n/index.ts](./src/i18n/index.ts). See the Languages section of [CUSTOMIZATION.md](./CUSTOMIZATION.md).
+
 | Route              | Page                                        |
 | ------------------ | ------------------------------------------- |
 | `/`                | Homepage                                    |
-| `/catalog`         | Full catalogue with filters and sorting     |
-| `/products/[slug]` | Product detail, generated per Markdown file |
-| `/about`           | Studio story                                |
-| `/cart`            | Cart and checkout preview (`noindex`)       |
+| `/catalogue`       | Full catalogue with filters and sorting     |
+| `/produits/[slug]` | Product detail, generated per Markdown file |
+| `/atelier`         | Studio story                                |
+| `/panier`          | Cart and checkout preview (`noindex`)       |
 | `/404`             | Not found (`noindex`)                       |
 
 ## Typography

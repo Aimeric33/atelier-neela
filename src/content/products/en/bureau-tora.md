@@ -9,8 +9,8 @@ dimensions: L 130 × W 62 × H 74 cm
 finish: Natural Oil
 leadTime: 10 Weeks
 images:
-  - ../../assets/p-tora-1.jpg
-  - ../../assets/p-tora-2.jpg
+  - ../../../assets/p-tora-1.jpg
+  - ../../../assets/p-tora-2.jpg
 order: 6
 ---
 

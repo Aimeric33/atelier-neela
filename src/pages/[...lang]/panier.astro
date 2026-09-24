@@ -3,48 +3,66 @@ import { Image } from "astro:assets";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { siteConfig, pageTitle } from "@/config/site";
 import { formatPrice, getProducts, productForJson } from "@/data/products";
+import { fill, localeMeta, localeStaticPaths, localizePath, routes, useTranslations, type Locale } from "@/i18n";
 
-const products = await getProducts();
+export function getStaticPaths() {
+  return localeStaticPaths();
+}
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const catalogHref = localizePath(routes.catalog, lang);
+const products = await getProducts(lang);
 
 // Everything the client-side cart needs travels in one JSON payload, so the
-// inline script never hardcodes currency, locale or delivery pricing.
+// inline script never hardcodes currency, locale, copy or delivery pricing.
 const cartData = {
   ...siteConfig.commerce,
+  locale: localeMeta[lang].intl,
   products: products.map(productForJson),
+  strings: {
+    titles: t.cart.titles,
+    continueToDetails: t.cart.continueToDetails,
+    reserve: t.cart.reserve,
+    previewAlert: t.cart.previewAlert,
+  },
 };
+const zero = formatPrice(0, lang);
 ---
 
 <BaseLayout
-  title={pageTitle("Your cart")}
-  description={`Review the pieces you've selected from the ${siteConfig.name} catalogue.`}
+  title={pageTitle(t.cart.title)}
+  description={t.cart.description(siteConfig.name)}
   noindex={true}
 >
   <main id="main-content" class="shell py-12">
     <header class="flex flex-wrap items-end justify-between gap-x-8 gap-y-6 border-b border-line pb-8">
-      <h1 class="type-h1" data-cart-title>Empty for now</h1>
+      <h1 class="type-h1" data-cart-title>{t.cart.titles.empty}</h1>
       <ol class="mono hidden gap-7 text-[0.6875rem] uppercase tracking-[0.05em] md:flex">
-        <li data-cart-step="cart">01 — Selection</li>
-        <li data-cart-step="details">02 — Details</li>
-        <li class="text-muted">03 — Confirmation</li>
+        <li data-cart-step="cart">{t.cart.steps[0]}</li>
+        <li data-cart-step="details">{t.cart.steps[1]}</li>
+        <li class="text-muted">{t.cart.steps[2]}</li>
       </ol>
     </header>
 
     <div class="py-28 text-center" data-cart-empty>
-      <p class="type-body mx-auto max-w-[42ch]">
-        You haven't added any pieces yet. The catalogue is small, slow, and waiting.
-      </p>
-      <a href="/catalog" class="btn btn-primary mt-8">Browse the catalogue</a>
+      <p class="type-body mx-auto max-w-[42ch]">{t.cart.emptyCopy}</p>
+      <a href={catalogHref} class="btn btn-primary mt-8">{t.common.browseCatalogue}</a>
     </div>
 
     <div class="hidden grid-cols-1 items-start gap-x-12 gap-y-12 pt-10 lg:grid-cols-12" data-cart-filled>
-      <section class="lg:col-span-7" aria-label="Selected pieces">
+      <section class="lg:col-span-7" aria-label={t.cart.selectedLabel}>
         <ul class="border-t border-line" data-cart-list aria-live="polite"></ul>
 
         <form id="checkout-form" class="hidden space-y-12" data-checkout-form novalidate>
           <fieldset>
-            <legend class="label">Contact</legend>
+            <legend class="label">{t.cart.contact}</legend>
             <div class="mt-5">
-              <label class="field-label" for="checkout-email">Email address</label>
+              <label class="field-label" for="checkout-email">{t.cart.email}</label>
               <input
                 id="checkout-email"
                 name="email"
@@ -58,60 +76,60 @@ const cartData = {
           </fieldset>
 
           <fieldset>
-            <legend class="label">Delivery</legend>
+            <legend class="label">{t.cart.delivery}</legend>
             <div class="mt-5 grid gap-6 sm:grid-cols-2">
               <div>
-                <label class="field-label" for="checkout-first">First name</label>
+                <label class="field-label" for="checkout-first">{t.cart.firstName}</label>
                 <input
                   id="checkout-first"
                   name="firstName"
                   required
                   autocomplete="given-name"
-                  placeholder="Astrid"
+                  placeholder={t.cart.placeholders.firstName}
                   class="field mono"
                 />
               </div>
               <div>
-                <label class="field-label" for="checkout-last">Last name</label>
+                <label class="field-label" for="checkout-last">{t.cart.lastName}</label>
                 <input
                   id="checkout-last"
                   name="lastName"
                   required
                   autocomplete="family-name"
-                  placeholder="Lindgren"
+                  placeholder={t.cart.placeholders.lastName}
                   class="field mono"
                 />
               </div>
               <div class="sm:col-span-2">
-                <label class="field-label" for="checkout-address">Street address</label>
+                <label class="field-label" for="checkout-address">{t.cart.street}</label>
                 <input
                   id="checkout-address"
                   name="address"
                   required
                   autocomplete="street-address"
-                  placeholder="Storgatan 12"
+                  placeholder={t.cart.placeholders.street}
                   class="field mono"
                 />
               </div>
               <div>
-                <label class="field-label" for="checkout-city">City</label>
+                <label class="field-label" for="checkout-city">{t.cart.city}</label>
                 <input
                   id="checkout-city"
                   name="city"
                   required
                   autocomplete="address-level2"
-                  placeholder="Växjö"
+                  placeholder={t.cart.placeholders.city}
                   class="field mono"
                 />
               </div>
               <div>
-                <label class="field-label" for="checkout-postcode">Postcode</label>
+                <label class="field-label" for="checkout-postcode">{t.cart.postcode}</label>
                 <input
                   id="checkout-postcode"
                   name="postalCode"
                   required
                   autocomplete="postal-code"
-                  placeholder="352 31"
+                  placeholder={t.cart.placeholders.postcode}
                   class="field mono"
                 />
               </div>
@@ -119,10 +137,10 @@ const cartData = {
           </fieldset>
 
           <fieldset>
-            <legend class="label">Payment</legend>
+            <legend class="label">{t.cart.payment}</legend>
             <div class="mt-5 grid gap-6 sm:grid-cols-2">
               <div class="sm:col-span-2">
-                <label class="field-label" for="checkout-card">Card number</label>
+                <label class="field-label" for="checkout-card">{t.cart.cardNumber}</label>
                 <input
                   id="checkout-card"
                   name="cardNumber"
@@ -136,21 +154,21 @@ const cartData = {
                 />
               </div>
               <div>
-                <label class="field-label" for="checkout-expiry">Expiry</label>
+                <label class="field-label" for="checkout-expiry">{t.cart.expiry}</label>
                 <input
                   id="checkout-expiry"
                   name="cardExpiry"
                   required
                   inputmode="numeric"
                   autocomplete="cc-exp"
-                  placeholder="08 / 28"
+                  placeholder={t.cart.placeholders.expiry}
                   maxlength="7"
                   data-card-expiry
                   class="field mono"
                 />
               </div>
               <div>
-                <label class="field-label" for="checkout-cvc">CVC</label>
+                <label class="field-label" for="checkout-cvc">{t.cart.cvc}</label>
                 <input
                   id="checkout-cvc"
                   name="cardCvc"
@@ -168,31 +186,28 @@ const cartData = {
         </form>
       </section>
 
-      <aside class="border-t border-line pt-6 lg:sticky lg:top-28 lg:col-span-5" aria-label="Order summary">
-        <h2 class="label">Order summary</h2>
+      <aside class="border-t border-line pt-6 lg:sticky lg:top-28 lg:col-span-5" aria-label={t.cart.summaryLabel}>
+        <h2 class="label">{t.cart.summary}</h2>
 
         <dl class="mono mt-6 text-[0.8125rem]">
           <div class="flex justify-between border-b border-line py-3">
-            <dt class="text-muted">Subtotal</dt>
-            <dd data-cart-subtotal>$0</dd>
+            <dt class="text-muted">{t.cart.subtotal}</dt>
+            <dd data-cart-subtotal>{zero}</dd>
           </div>
           <div class="flex justify-between border-b border-line py-3">
-            <dt class="text-muted">White-glove delivery</dt>
-            <dd data-cart-shipping>$0</dd>
+            <dt class="text-muted">{t.cart.shipping}</dt>
+            <dd data-cart-shipping>{zero}</dd>
           </div>
           <div class="flex items-baseline justify-between pt-5">
-            <dt class="label">Total</dt>
-            <dd class="mono text-2xl" data-cart-total>$0</dd>
+            <dt class="label">{t.cart.total}</dt>
+            <dd class="mono text-2xl" data-cart-total>{zero}</dd>
           </div>
         </dl>
 
-        <button type="button" class="btn btn-primary mt-8 w-full" data-cart-primary>Continue to details</button>
-        <button type="button" class="link link-mono mt-5 hidden text-muted" data-cart-back>Back to selection</button>
+        <button type="button" class="btn btn-primary mt-8 w-full" data-cart-primary>{t.cart.continueToDetails}</button>
+        <button type="button" class="link link-mono mt-5 hidden text-muted" data-cart-back>{t.cart.back}</button>
 
-        <p class="type-body mt-8 border-t border-line pt-6 text-[0.8125rem]">
-          Each piece is signed and dated. Pieces are wrapped in unbleached cotton and shipped in reusable wooden
-          crates. Returned crates earn a small credit toward your next order.
-        </p>
+        <p class="type-body mt-8 border-t border-line pt-6 text-[0.8125rem]">{t.cart.note}</p>
       </aside>
     </div>
 
@@ -201,7 +216,7 @@ const cartData = {
         <template data-product-template={product.slug}>
           <li class="flex gap-6 border-b border-line py-6" data-cart-row={product.slug}>
             <a
-              href={`/products/${product.slug}`}
+              href={localizePath(routes.product(product.slug), lang)}
               class="block size-24 shrink-0 overflow-hidden bg-surface md:size-28"
               tabindex="-1"
               aria-hidden="true"
@@ -219,18 +234,18 @@ const cartData = {
             <div class="flex min-w-0 flex-1 flex-col justify-between gap-4">
               <div class="flex justify-between gap-4">
                 <div class="min-w-0">
-                  <a href={`/products/${product.slug}`} class="link text-[0.9375rem] font-medium">
+                  <a href={localizePath(routes.product(product.slug), lang)} class="link text-[0.9375rem] font-medium">
                     {product.name}
                   </a>
                   <p class="mono mt-1.5 text-[0.6875rem] uppercase tracking-[0.05em] text-muted">
                     {product.material} · {product.finish}
                   </p>
                   <p class="mono mt-1 text-[0.6875rem] uppercase tracking-[0.05em] text-muted">
-                    Lead time {product.leadTime}
+                    {t.common.leadTime} {product.leadTime}
                   </p>
                 </div>
                 <span class="mono whitespace-nowrap text-[0.8125rem]" data-row-line-price>
-                  {formatPrice(product.price)}
+                  {formatPrice(product.price, lang)}
                 </span>
               </div>
               <div class="flex items-center justify-between gap-4">
@@ -238,7 +253,7 @@ const cartData = {
                   <button
                     type="button"
                     data-cart-action="decrease"
-                    aria-label={`Decrease ${product.name} quantity`}
+                    aria-label={fill(t.common.decreaseQuantity, { name: product.name })}
                   >
                     −
                   </button>
@@ -246,7 +261,7 @@ const cartData = {
                   <button
                     type="button"
                     data-cart-action="increase"
-                    aria-label={`Increase ${product.name} quantity`}
+                    aria-label={fill(t.common.increaseQuantity, { name: product.name })}
                   >
                     +
                   </button>
@@ -255,9 +270,9 @@ const cartData = {
                   type="button"
                   class="link link-mono text-muted"
                   data-cart-action="remove"
-                  aria-label={`Remove ${product.name} from cart`}
+                  aria-label={fill(t.common.removeFromCart, { name: product.name })}
                 >
-                  Remove
+                  {t.common.remove}
                 </button>
               </div>
             </div>
@@ -272,6 +287,7 @@ const cartData = {
   <script is:inline>
     (() => {
       const cartData = JSON.parse(document.getElementById("cart-data").textContent);
+      const strings = cartData.strings;
       const productsBySlug = new Map(cartData.products.map((product) => [product.slug, product]));
       const formatPrice = (value) =>
         new Intl.NumberFormat(cartData.locale, {
@@ -319,14 +335,14 @@ const cartData = {
 
         if (rows.length === 0) step = "cart";
 
-        title.textContent =
-          rows.length === 0 ? "Empty for now" : step === "cart" ? "Review your selection" : "A few details";
+        title.textContent = rows.length === 0 ? strings.titles.empty : strings.titles[step];
         empty.classList.toggle("hidden", rows.length !== 0);
         filled.classList.toggle("hidden", rows.length === 0);
         filled.classList.toggle("grid", rows.length !== 0);
         list.classList.toggle("hidden", step !== "cart");
         form.classList.toggle("hidden", step !== "details");
-        primary.textContent = step === "cart" ? "Continue to details" : `Reserve — ${formatPrice(total)}`;
+        primary.textContent =
+          step === "cart" ? strings.continueToDetails : strings.reserve.replace("{total}", formatPrice(total));
         back.classList.toggle("hidden", step !== "details");
         stepCart.classList.toggle("text-muted", step !== "cart");
         stepDetails.classList.toggle("text-muted", step !== "details");
@@ -374,7 +390,7 @@ const cartData = {
           form.reportValidity();
           return;
         }
-        window.alert("Checkout is a design preview — payment is not connected.");
+        window.alert(strings.previewAlert);
       });
 
       cardNumber.addEventListener("input", () => (cardNumber.value = formatCardNumber(cardNumber.value)));

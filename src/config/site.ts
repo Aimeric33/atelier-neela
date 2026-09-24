@@ -11,13 +11,19 @@
  * there is only ever one source of truth for it.
  */
 
+import { routes, type Locale } from "@/i18n";
+
+/** A string given once per locale. */
+export type Localized = Record<Locale, string>;
+
 export interface NavItem {
-  label: string;
+  label: Localized;
+  /** Unprefixed path (see `routes`); components add the locale prefix. */
   href: string;
 }
 
 export interface FooterColumn {
-  heading: string;
+  heading: Localized;
   links: NavItem[];
 }
 
@@ -26,14 +32,19 @@ export const siteConfig = {
   name: "Atelier Kō",
 
   /** One-line positioning statement. Emitted as the Organization slogan. */
-  tagline: "Furniture, made by hand",
+  tagline: { fr: "Du mobilier, fait main", en: "Furniture, made by hand" } satisfies Localized,
 
   /** Default meta description for pages that do not set their own. */
-  description:
-    "A small Swedish atelier crafting solid oak, ash and walnut furniture by hand. Made to order in Småland.",
+  description: {
+    fr: "Un petit atelier suédois qui fabrique à la main du mobilier en chêne, frêne et noyer massifs. Fait sur commande dans le Småland.",
+    en: "A small Swedish atelier crafting solid oak, ash and walnut furniture by hand. Made to order in Småland.",
+  } satisfies Localized,
 
   /** Default <title> for pages that do not set their own. */
-  defaultTitle: "Atelier Kō — Hand-made furniture from the northern woods",
+  defaultTitle: {
+    fr: "Atelier Kō — Mobilier fait main, venu des forêts du Nord",
+    en: "Atelier Kō — Hand-made furniture from the northern woods",
+  } satisfies Localized,
 
   /** Contact address, linked in the footer and on the studio page. */
   email: "email@example.com",
@@ -56,48 +67,51 @@ export const siteConfig = {
     src: "/og-image.png",
     width: 1200,
     height: 630,
-    alt: "Atelier Kō — hand-carved furniture from the northern woods",
+    alt: {
+      fr: "Atelier Kō — mobilier sculpté à la main, venu des forêts du Nord",
+      en: "Atelier Kō — hand-carved furniture from the northern woods",
+    } satisfies Localized,
   },
 
   /** Primary navigation, in order. Also drives the mobile menu. */
   navigation: [
-    { label: "Index", href: "/" },
-    { label: "Catalogue", href: "/catalog" },
-    { label: "Studio", href: "/about" },
+    { label: { fr: "Accueil", en: "Index" }, href: routes.home },
+    { label: { fr: "Catalogue", en: "Catalogue" }, href: routes.catalog },
+    { label: { fr: "Atelier", en: "Studio" }, href: routes.studio },
   ] satisfies NavItem[],
 
   /** Short paragraph in the first footer column. */
-  footerBlurb:
-    "A two-person workshop in Småland, Sweden. Solid oak, ash and walnut — cut, joined and finished by hand.",
+  footerBlurb: {
+    fr: "Un atelier de deux personnes dans le Småland, en Suède. Chêne, frêne et noyer massifs — débités, assemblés et finis à la main.",
+    en: "A two-person workshop in Småland, Sweden. Solid oak, ash and walnut — cut, joined and finished by hand.",
+  } satisfies Localized,
 
   /** Footer link columns. Add or remove columns freely. */
   footerColumns: [
     {
-      heading: "Catalogue",
+      heading: { fr: "Catalogue", en: "Catalogue" },
       links: [
-        { label: "All pieces", href: "/catalog" },
-        { label: "The studio", href: "/about" },
-        { label: "Your cart", href: "/cart" },
+        { label: { fr: "Toutes les pièces", en: "All pieces" }, href: routes.catalog },
+        { label: { fr: "L'atelier", en: "The studio" }, href: routes.studio },
+        { label: { fr: "Votre panier", en: "Your cart" }, href: routes.cart },
       ],
     },
     {
-      heading: "Enquiries",
+      heading: { fr: "Demandes", en: "Enquiries" },
       links: [
-        { label: "Custom orders", href: "/about#studio" },
-        { label: "Trade portal", href: "/about#studio" },
-        { label: "Studio visits", href: "/about#studio" },
+        { label: { fr: "Commandes sur mesure", en: "Custom orders" }, href: `${routes.studio}#studio` },
+        { label: { fr: "Espace professionnels", en: "Trade portal" }, href: `${routes.studio}#studio` },
+        { label: { fr: "Visites de l'atelier", en: "Studio visits" }, href: `${routes.studio}#studio` },
       ],
     },
     {
-      heading: "Elsewhere",
-      links: [{ label: "Instagram", href: "https://www.instagram.com/" }],
+      heading: { fr: "Ailleurs", en: "Elsewhere" },
+      links: [{ label: { fr: "Instagram", en: "Instagram" }, href: "https://www.instagram.com/" }],
     },
   ] satisfies FooterColumn[],
 
-  /** Commerce defaults. */
+  /** Commerce defaults. Prices are formatted in each locale's conventions. */
   commerce: {
-    /** BCP 47 locale used to format every price. */
-    locale: "en-US",
     /** ISO 4217 currency code. */
     currency: "USD",
     /** Flat delivery charge added once when the cart is not empty. */
@@ -106,16 +120,16 @@ export const siteConfig = {
 
   /**
    * Which products the theme promotes. Each value is a filename in
-   * src/content/products without the .md extension. A slug that does not
+   * src/content/products/<locale>/ without the .md extension. A slug that does not
    * resolve fails the build rather than rendering an empty section.
    */
   featured: {
     /** Three cards in the homepage "in the workshop" grid. */
-    homepageGrid: ["arvid-chair", "low-plinth-table", "tora-desk"],
+    homepageGrid: ["chaise-arvid", "table-basse-plinth", "bureau-tora"],
     /** The single large piece given its own homepage section. */
-    homepageSolo: "monolith-bench",
+    homepageSolo: "banc-monolith",
     /** The piece shown at the foot of the mobile menu. */
-    mobileMenu: "oken-stool",
+    mobileMenu: "tabouret-oken",
   },
 } as const;
 

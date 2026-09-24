@@ -5,44 +5,40 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import heroImg from "@/assets/atelier-hero.jpg";
 import { siteConfig } from "@/config/site";
 import { formatPrice, getProducts, requireProduct } from "@/data/products";
+import { localeStaticPaths, localizePath, routes, useTranslations, type Locale } from "@/i18n";
 
-const products = await getProducts();
+export function getStaticPaths() {
+  return localeStaticPaths();
+}
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const products = await getProducts(lang);
 const featured = siteConfig.featured.homepageGrid.map((slug) => requireProduct(products, slug));
 const solo = requireProduct(products, siteConfig.featured.homepageSolo);
 
-const siteUrl = (Astro.site ?? new URL(Astro.url.origin)).href;
+const siteUrl = new URL(localizePath(routes.home, lang), Astro.site ?? Astro.url.origin).href;
 
 const facts = [
-  { value: "2018", label: "Founded" },
-  { value: siteConfig.location.region, label: "Sweden" },
-  { value: String(products.length).padStart(2, "0"), label: "Pieces" },
-  { value: "03", label: "Timbers" },
+  { value: "2018", label: t.home.facts.founded },
+  { value: siteConfig.location.region, label: t.home.facts.country },
+  { value: String(products.length).padStart(2, "0"), label: t.home.facts.pieces },
+  { value: "03", label: t.home.facts.timbers },
 ];
 
-const materials = [
-  {
-    name: "European Oak",
-    tag: "Quiet · structural",
-    copy: "A single grade of slow-grown oak from managed forests in southern Sweden. Quarter-sawn for stability.",
-  },
-  {
-    name: "Curved Ash",
-    tag: "Resilient · sprung",
-    copy: "A small reserve from the south coast, steam-bent over custom forms. Used only where the curve earns it.",
-  },
-  {
-    name: "American Walnut",
-    tag: "Warm · figured",
-    copy: "Bought in single planks from a family mill in Pennsylvania. The grain decides the piece, not the reverse.",
-  },
-];
+const materials = t.home.materials;
 
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: siteConfig.name,
   url: siteUrl,
-  slogan: siteConfig.tagline,
+  slogan: siteConfig.tagline[lang],
   email: siteConfig.email,
   address: {
     "@type": "PostalAddress",
@@ -53,21 +49,18 @@ const organizationSchema = {
 ---
 
 <BaseLayout
-  title={`${siteConfig.name} — ${siteConfig.tagline}`}
-  description="A small catalogue of seating, tables and storage. Solid oak, ash and walnut, hand-built to order in Småland, Sweden."
+  title={`${siteConfig.name} — ${siteConfig.tagline[lang]}`}
+  description={t.home.description}
 >
   <main id="main-content">
     {/* ---------------------------------------------------------------- Hero */}
     <section class="shell grid items-center gap-x-12 gap-y-10 pb-4 pt-8 md:grid-cols-12 md:pb-10 md:pt-12">
       <div class="hero-in md:col-span-5">
-        <h1 class="type-hero">Hand-carved pieces from the northern woods</h1>
-        <p class="type-lead mt-7 max-w-[42ch]">
-          A small, slow catalogue of seating, tables and storage — solid oak, ash and walnut, shaped by hand and
-          built to outlast the room they were made for.
-        </p>
+        <h1 class="type-hero">{t.home.heroTitle}</h1>
+        <p class="type-lead mt-7 max-w-[42ch]">{t.home.heroLead}</p>
         <div class="mt-9 flex flex-wrap gap-3">
-          <a href="/catalog" class="btn btn-primary">Browse the catalogue</a>
-          <a href="/about" class="btn btn-outline">The workshop</a>
+          <a href={localizePath(routes.catalog, lang)} class="btn btn-primary">{t.common.browseCatalogue}</a>
+          <a href={localizePath(routes.studio, lang)} class="btn btn-outline">{t.home.ctaWorkshop}</a>
         </div>
       </div>
 
@@ -75,7 +68,7 @@ const organizationSchema = {
         <div class="overflow-hidden bg-surface">
           <Image
             src={heroImg}
-            alt="Hand-carved sculptural walnut lounge chair in a sunlit atelier"
+            alt={t.home.heroAlt}
             width={1600}
             height={1400}
             format="webp"
@@ -85,8 +78,8 @@ const organizationSchema = {
           />
         </div>
         <figcaption class="mono mt-3 flex justify-between gap-4 text-[0.625rem] uppercase tracking-[0.05em] text-muted">
-          <span>No. 04 — Arvid Lounge</span>
-          <span>Solid walnut · 2025</span>
+          <span>{t.home.heroCaption[0]}</span>
+          <span>{t.home.heroCaption[1]}</span>
         </figcaption>
       </figure>
     </section>
@@ -109,8 +102,8 @@ const organizationSchema = {
     <section class="shell mt-24 md:mt-36">
       <div class="rule" data-reveal="line"></div>
       <div class="mt-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4" data-reveal>
-        <h2 class="type-h2 max-w-[14ch]">A few pieces, close to ready</h2>
-        <a href="/catalog" class="link link-mono pb-1.5 text-muted">All six pieces</a>
+        <h2 class="type-h2 max-w-[14ch]">{t.home.featuredHeading}</h2>
+        <a href={localizePath(routes.catalog, lang)} class="link link-mono pb-1.5 text-muted">{t.common.allPieces}</a>
       </div>
 
       <div class="mt-12 grid gap-x-8 gap-y-14 md:mt-14 md:grid-cols-3">
@@ -127,7 +120,7 @@ const organizationSchema = {
       <div class="shell grid items-center gap-10 md:grid-cols-12 md:gap-12">
         <div class="md:col-span-7 lg:col-span-8">
           <a
-            href={`/products/${solo.slug}`}
+            href={localizePath(routes.product(solo.slug), lang)}
             class="group block overflow-hidden bg-surface"
             data-reveal="mask"
             aria-label={`${solo.name} — ${solo.shortDescription}`}
@@ -149,16 +142,16 @@ const organizationSchema = {
         </div>
 
         <div class="md:col-span-5 lg:col-span-4" data-reveal style="--reveal-delay:140ms">
-          <h2 class="type-h2">One plank, no hardware</h2>
+          <h2 class="type-h2">{t.home.soloHeading}</h2>
           <p class="type-body mt-6 max-w-[44ch]">{solo.description}</p>
 
           <dl class="mono mt-9 border-t border-line text-[0.8125rem]">
             {
               [
-                ["Dimensions", solo.dimensions],
-                ["Finish", solo.finish],
-                ["Lead time", solo.leadTime],
-                ["From", formatPrice(solo.price)],
+                [t.home.specs.dimensions, solo.dimensions],
+                [t.home.specs.finish, solo.finish],
+                [t.home.specs.leadTime, solo.leadTime],
+                [t.home.specs.from, formatPrice(solo.price, lang)],
               ].map(([term, value]) => (
                 <div class="flex justify-between gap-6 border-b border-line py-3">
                   <dt class="text-muted">{term}</dt>
@@ -168,7 +161,7 @@ const organizationSchema = {
             }
           </dl>
 
-          <a href={`/products/${solo.slug}`} class="btn btn-primary mt-9">See the piece</a>
+          <a href={localizePath(routes.product(solo.slug), lang)} class="btn btn-primary mt-9">{t.home.seePiece}</a>
         </div>
       </div>
     </section>
@@ -176,7 +169,7 @@ const organizationSchema = {
     {/* ----------------------------------------------------------- Materials */}
     <section class="shell mt-24 md:mt-36">
       <div class="rule" data-reveal="line"></div>
-      <h2 class="type-h2 mt-8 max-w-[18ch]" data-reveal>We've spent years learning three timbers</h2>
+      <h2 class="type-h2 mt-8 max-w-[18ch]" data-reveal>{t.home.materialsHeading}</h2>
 
       <div class="mt-12 grid gap-x-8 gap-y-12 md:grid-cols-3">
         {

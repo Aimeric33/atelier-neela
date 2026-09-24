@@ -9,8 +9,8 @@ dimensions: Ø 32 × H 45 cm
 finish: Matte Hard-Wax Oil
 leadTime: 4–6 Weeks
 images:
-  - ../../assets/p-oken-1.jpg
-  - ../../assets/p-oken-2.jpg
+  - ../../../assets/p-oken-1.jpg
+  - ../../../assets/p-oken-2.jpg
 order: 1
 ---
 

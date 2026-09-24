@@ -9,8 +9,8 @@ dimensions: L 180 × W 36 × H 44 cm
 finish: Raw / Unfinished
 leadTime: 8 Weeks
 images:
-  - ../../assets/p-monolith-1.jpg
-  - ../../assets/p-monolith-2.jpg
+  - ../../../assets/p-monolith-1.jpg
+  - ../../../assets/p-monolith-2.jpg
 order: 4
 ---
 

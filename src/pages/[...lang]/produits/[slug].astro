@@ -4,30 +4,39 @@ import ProductCard from "@/components/ProductCard.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { siteConfig, pageTitle } from "@/config/site";
 import { formatPrice, getProducts, getRelated, type Product } from "@/data/products";
+import { fill, localeStaticPaths, localizePath, routes, useTranslations, type Locale } from "@/i18n";
 
 export async function getStaticPaths() {
-  const products = await getProducts();
-  return products.map((product) => ({
-    params: { slug: product.slug },
-    props: { product, related: getRelated(products, product.slug) },
-  }));
+  const paths = await Promise.all(
+    localeStaticPaths().map(async ({ params, props: { lang } }) => {
+      const products = await getProducts(lang);
+      return products.map((product) => ({
+        params: { ...params, slug: product.slug },
+        props: { lang, product, related: getRelated(products, product.slug) },
+      }));
+    }),
+  );
+  return paths.flat();
 }
 
 interface Props {
+  lang: Locale;
   product: Product;
   related: Product[];
 }
 
-const { product, related } = Astro.props;
+const { lang, product, related } = Astro.props;
+const t = useTranslations(lang);
+const catalogHref = localizePath(routes.catalog, lang);
 
 const origin = Astro.site ?? new URL(Astro.url.origin);
-const productUrl = new URL(`/products/${product.slug}`, origin).href;
+const productUrl = new URL(localizePath(routes.product(product.slug), lang), origin).href;
 
 const specs = [
-  ["Material", product.material],
-  ["Dimensions", product.dimensions],
-  ["Finish", product.finish],
-  ["Lead time", product.leadTime],
+  [t.product.specs.material, product.material],
+  [t.product.specs.dimensions, product.dimensions],
+  [t.product.specs.finish, product.finish],
+  [t.product.specs.leadTime, product.leadTime],
 ];
 
 const productSchema = {
@@ -52,7 +61,7 @@ const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Catalogue", item: new URL("/catalog", origin).href },
+    { "@type": "ListItem", position: 1, name: t.product.catalogue, item: new URL(catalogHref, origin).href },
     { "@type": "ListItem", position: 2, name: product.name, item: productUrl },
   ],
 };
@@ -64,22 +73,22 @@ const breadcrumbSchema = {
   image={product.images[0]}
 >
   <main id="main-content" class="shell">
-    <nav class="mono flex gap-2 py-6 text-[0.6875rem] uppercase tracking-[0.05em] text-muted" aria-label="Breadcrumb">
-      <a href="/catalog" class="link">Catalogue</a>
+    <nav class="mono flex gap-2 py-6 text-[0.6875rem] uppercase tracking-[0.05em] text-muted" aria-label={t.product.breadcrumb}>
+      <a href={catalogHref} class="link">{t.product.catalogue}</a>
       <span aria-hidden="true">/</span>
       <span class="text-ink" aria-current="page">{product.name}</span>
     </nav>
 
     <div class="grid items-start gap-x-12 gap-y-10 border-t border-line pt-8 lg:grid-cols-12">
       {/* ------------------------------------------------------------ Gallery */}
-      <section class="lg:col-span-7" aria-label={`${product.name} images`} data-product-gallery>
+      <section class="lg:col-span-7" aria-label={fill(t.product.imagesLabel, { name: product.name })} data-product-gallery>
         <div class="relative overflow-hidden bg-surface">
           {
             product.images.map((image, index) => (
               <div class:list={["gallery-panel", index !== 0 && "is-hidden"]} data-gallery-panel={index}>
                 <Image
                   src={image}
-                  alt={`${product.name} — view ${index + 1} of ${product.images.length}`}
+                  alt={fill(t.product.viewAlt, { name: product.name, i: index + 1, n: product.images.length })}
                   width={1440}
                   height={1800}
                   format="webp"
@@ -92,14 +101,14 @@ const breadcrumbSchema = {
           }
         </div>
 
-        <div class="mt-3 grid grid-cols-3 gap-3" role="group" aria-label="Choose an image">
+        <div class="mt-3 grid grid-cols-3 gap-3" role="group" aria-label={t.product.chooseImage}>
           {
             product.images.map((image, index) => (
               <button
                 type="button"
                 class="gallery-thumb overflow-hidden bg-surface"
                 data-gallery-thumb={index}
-                aria-label={`Show view ${index + 1}`}
+                aria-label={fill(t.product.showView, { i: index + 1 })}
                 aria-pressed={index === 0 ? "true" : "false"}
               >
                 <Image
@@ -121,7 +130,7 @@ const breadcrumbSchema = {
       <div class="lg:sticky lg:top-28 lg:col-span-5">
         <p class="label">{product.collection}</p>
         <h1 class="type-h2 mt-5">{product.name}</h1>
-        <p class="mono mt-5 text-xl">{formatPrice(product.price)}</p>
+        <p class="mono mt-5 text-xl">{formatPrice(product.price, lang)}</p>
 
         <p class="type-body mt-8 max-w-[46ch]">{product.description}</p>
 
@@ -138,9 +147,9 @@ const breadcrumbSchema = {
 
         <div class="mt-10 flex flex-wrap items-stretch gap-3">
           <div class="qty" data-quantity>
-            <button type="button" data-quantity-decrease aria-label="Decrease quantity" disabled>−</button>
-            <output data-quantity-value aria-live="polite" aria-label="Quantity">1</output>
-            <button type="button" data-quantity-increase aria-label="Increase quantity">+</button>
+            <button type="button" data-quantity-decrease aria-label={t.product.decreaseQuantity} disabled>−</button>
+            <output data-quantity-value aria-live="polite" aria-label={t.product.quantity}>1</output>
+            <button type="button" data-quantity-increase aria-label={t.product.increaseQuantity}>+</button>
           </div>
           <button
             type="button"
@@ -148,12 +157,12 @@ const breadcrumbSchema = {
             data-add-to-cart={product.slug}
             data-add-quantity="1"
           >
-            Add to cart
+            {t.product.addToCart}
           </button>
         </div>
 
         <p class="mono mt-5 text-[0.6875rem] uppercase leading-relaxed tracking-[0.05em] text-muted">
-          Free white-glove delivery in the EU · worldwide on request
+          {t.product.deliveryNote}
         </p>
       </div>
     </div>
@@ -161,8 +170,8 @@ const breadcrumbSchema = {
     {/* ------------------------------------------------------------- Related */}
     <section class="mt-32 md:mt-44">
       <div class="flex flex-wrap items-end justify-between gap-x-8 gap-y-4 border-t border-line pt-8" data-reveal>
-        <h2 class="type-h2 max-w-[16ch]">Pieces that sit well together</h2>
-        <a href="/catalog" class="link link-mono pb-1.5 text-muted">All six pieces</a>
+        <h2 class="type-h2 max-w-[16ch]">{t.product.relatedHeading}</h2>
+        <a href={catalogHref} class="link link-mono pb-1.5 text-muted">{t.common.allPieces}</a>
       </div>
 
       <div class="mt-12 grid gap-x-8 gap-y-14 md:mt-14 md:grid-cols-3">

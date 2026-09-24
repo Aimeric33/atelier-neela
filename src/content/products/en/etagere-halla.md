@@ -9,8 +9,8 @@ dimensions: L 90 × D 22 × H 4 cm
 finish: Matte Hard-Wax Oil
 leadTime: 3–4 Weeks
 images:
-  - ../../assets/p-halla-1.jpg
-  - ../../assets/p-halla-2.jpg
+  - ../../../assets/p-halla-1.jpg
+  - ../../../assets/p-halla-2.jpg
 order: 5
 ---
 

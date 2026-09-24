@@ -4,6 +4,7 @@ import archivoLatin from "@/assets/fonts/archivo-latin-wght-normal.woff2?url";
 import SiteFooter from "@/components/SiteFooter.astro";
 import SiteHeader from "@/components/SiteHeader.astro";
 import { siteConfig } from "@/config/site";
+import { getLocale, localeMeta, locales, localizePath, stripLocale, useTranslations } from "@/i18n";
 
 interface Props {
   /** Full <title> for the page. Should be unique per route. */
@@ -18,9 +19,12 @@ interface Props {
   includeFooter?: boolean;
 }
 
+const lang = getLocale(Astro.url);
+const t = useTranslations(lang);
+
 const {
-  title = siteConfig.defaultTitle,
-  description = siteConfig.description,
+  title = siteConfig.defaultTitle[lang],
+  description = siteConfig.description[lang],
   image,
   noindex = false,
   includeHeader = true,
@@ -30,12 +34,27 @@ const {
 const origin = Astro.site ?? Astro.url.origin;
 const canonicalUrl = new URL(Astro.url.pathname, origin);
 
+// Every indexable page exists in each locale at the same unprefixed path, so
+// the alternates are derived rather than declared per page.
+const basePath = stripLocale(Astro.url.pathname);
+const alternates = noindex
+  ? []
+  : [
+      ...locales.map((locale) => ({
+        hreflang: locale,
+        href: new URL(localizePath(basePath, locale), origin).href,
+      })),
+      { hreflang: "x-default", href: new URL(basePath, origin).href },
+    ];
+
+const cartLabels = t.common.cartLabel;
+
 // Pages that supply their own artwork win; everything else falls back to the
 // designed share card in public/. Dimensions are emitted either way so social
 // previews reserve the right space instead of reflowing.
 const social =
   image === undefined
-    ? siteConfig.socialImage
+    ? { ...siteConfig.socialImage, alt: siteConfig.socialImage.alt[lang] }
     : typeof image === "string"
       ? { src: image, width: undefined, height: undefined, alt: undefined }
       : { src: image.src, width: image.width, height: image.height, alt: undefined };
@@ -44,7 +63,7 @@ const ogImage = new URL(social.src, origin).href;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -55,6 +74,7 @@ const ogImage = new URL(social.src, origin).href;
     <link rel="canonical" href={canonicalUrl.href} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {noindex && <meta name="robots" content="noindex,nofollow" />}
+    {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />)}
 
     <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
 
@@ -62,6 +82,12 @@ const ogImage = new URL(social.src, origin).href;
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content={siteConfig.name} />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content={localeMeta[lang].ogLocale} />
+    {
+      locales
+        .filter((locale) => locale !== lang)
+        .map((locale) => <meta property="og:locale:alternate" content={localeMeta[locale].ogLocale} />)
+    }
     <meta property="og:url" content={canonicalUrl.href} />
     <meta property="og:image" content={ogImage} />
     {social.width && <meta property="og:image:width" content={String(social.width)} />}
@@ -85,7 +111,7 @@ const ogImage = new URL(social.src, origin).href;
       }
     </script>
 
-    <script is:inline>
+    <script is:inline define:vars={{ cartLabels }}>
       (() => {
         const storageKey = "atelier-ko-cart";
 
@@ -112,7 +138,8 @@ const ogImage = new URL(social.src, origin).href;
             node.textContent = String(total).padStart(2, "0");
           });
           document.querySelectorAll("[data-cart-label]").forEach((node) => {
-            node.setAttribute("aria-label", `Cart, ${total} ${total === 1 ? "item" : "items"}`);
+            const label = total === 1 ? cartLabels.one : cartLabels.other;
+            node.setAttribute("aria-label", label.replace("{n}", String(total)));
           });
         }
 
@@ -158,9 +185,9 @@ const ogImage = new URL(social.src, origin).href;
       href="#main-content"
       class="btn btn-primary sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100]"
     >
-      Skip to content
+      {t.common.skipLink}
     </a>
-    {includeHeader && <SiteHeader currentPath={Astro.url.pathname} />}
+    {includeHeader && <SiteHeader />}
     <slot />
     {includeFooter && <SiteFooter />}
 
@@ -169,7 +196,7 @@ const ogImage = new URL(social.src, origin).href;
       // delegated from the document. Any element with `data-cart-toggle` opens
       // it and any `data-cart-close` closes it, which means pages never wire up
       // their own handlers. Without JavaScript the header cart stays an
-      // ordinary link to /cart and this never runs.
+      // ordinary link to the cart page and this never runs.
       (() => {
         const drawer = document.querySelector("[data-cart-drawer]");
         if (!drawer) return;

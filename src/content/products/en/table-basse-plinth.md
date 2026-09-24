@@ -9,8 +9,8 @@ dimensions: L 140 × W 70 × H 36 cm
 finish: Natural Oil
 leadTime: 8–10 Weeks
 images:
-  - ../../assets/p-plinth-1.jpg
-  - ../../assets/p-plinth-2.jpg
+  - ../../../assets/p-plinth-1.jpg
+  - ../../../assets/p-plinth-2.jpg
 order: 3
 ---
 
