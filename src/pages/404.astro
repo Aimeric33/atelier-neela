@@ -17,7 +17,7 @@ const t = useTranslations(lang);
     <h1 class="type-hero hero-in mt-6 max-w-[14ch]" style="--reveal-delay:90ms">{t.notFound.heading}</h1>
     <p class="type-lead hero-in mt-8 max-w-[46ch]" style="--reveal-delay:180ms">{t.notFound.lead}</p>
     <div class="hero-in mt-10 flex flex-wrap gap-3" style="--reveal-delay:260ms">
-      <a href={localizePath(routes.catalog, lang)} class="btn btn-primary">{t.notFound.back}</a>
+      <a href={localizePath(routes.creations, lang)} class="btn btn-primary">{t.notFound.back}</a>
       <a href={localizePath(routes.home, lang)} class="btn btn-outline">{t.notFound.home}</a>
     </div>
   </main>
