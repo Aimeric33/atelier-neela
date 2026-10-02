@@ -15,7 +15,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const catalogHref = localizePath(routes.catalog, lang);
+const catalogHref = localizePath(routes.creations, lang);
 const products = await getProducts(lang);
 
 // Everything the client-side cart needs travels in one JSON payload, so the

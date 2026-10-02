@@ -20,6 +20,8 @@ export interface NavItem {
   label: Localized;
   /** Unprefixed path (see `routes`); components add the locale prefix. */
   href: string;
+  /** Sub-links shown in a dropdown under this item. */
+  children?: NavItem[];
 }
 
 export interface FooterColumn {
@@ -56,7 +58,7 @@ export const siteConfig = {
   },
 
   /** Browser theme colour. Keep in step with `--canvas` in src/styles.css. */
-  themeColor: "#f4f4f2",
+  themeColor: "#f6f5f2",
 
   /**
    * Fallback social share card, served from public/. Used by any page that
@@ -76,8 +78,19 @@ export const siteConfig = {
   /** Primary navigation, in order. Also drives the mobile menu. */
   navigation: [
     { label: { fr: "Accueil", en: "Home" }, href: routes.home },
-    { label: { fr: "Catalogue", en: "Catalogue" }, href: routes.catalog },
-    { label: { fr: "Atelier", en: "Atelier" }, href: routes.studio },
+    {
+      label: { fr: "Créations", en: "Creations" },
+      href: routes.creations,
+      children: [
+        { label: { fr: "Mariage", en: "Wedding" }, href: `${routes.creations}?categorie=mariage` },
+        { label: { fr: "Anniversaire", en: "Birthday" }, href: `${routes.creations}?categorie=anniversaire` },
+        { label: { fr: "Baptême", en: "Christening" }, href: `${routes.creations}?categorie=bapteme` },
+        { label: { fr: "Sur-mesure", en: "Bespoke" }, href: `${routes.creations}?categorie=sur-mesure` },
+      ],
+    },
+    { label: { fr: "Atelier", en: "Atelier" }, href: routes.atelier },
+    { label: { fr: "Blog", en: "Blog" }, href: routes.blog },
+    { label: { fr: "Contact", en: "Contact" }, href: routes.contact },
   ] satisfies NavItem[],
 
   /** Short paragraph in the first footer column. */
@@ -91,17 +104,17 @@ export const siteConfig = {
     {
       heading: { fr: "Catalogue", en: "Catalogue" },
       links: [
-        { label: { fr: "Toutes les pièces", en: "All pieces" }, href: routes.catalog },
-        { label: { fr: "L'atelier", en: "The atelier" }, href: routes.studio },
+        { label: { fr: "Toutes les pièces", en: "All pieces" }, href: routes.creations },
+        { label: { fr: "L'atelier", en: "The atelier" }, href: routes.atelier },
         { label: { fr: "Votre panier", en: "Your cart" }, href: routes.cart },
       ],
     },
     {
       heading: { fr: "Demandes", en: "Enquiries" },
       links: [
-        { label: { fr: "Commandes sur mesure", en: "Custom orders" }, href: `${routes.studio}#studio` },
-        { label: { fr: "Espace professionnels", en: "Trade portal" }, href: `${routes.studio}#studio` },
-        { label: { fr: "Visites de l'atelier", en: "Studio visits" }, href: `${routes.studio}#studio` },
+        { label: { fr: "Commandes sur mesure", en: "Custom orders" }, href: `${routes.atelier}#studio` },
+        { label: { fr: "Espace professionnels", en: "Trade portal" }, href: `${routes.atelier}#studio` },
+        { label: { fr: "Visites de l'atelier", en: "Studio visits" }, href: `${routes.atelier}#studio` },
       ],
     },
     {

@@ -27,7 +27,7 @@ interface Props {
 
 const { lang, product, related } = Astro.props;
 const t = useTranslations(lang);
-const catalogHref = localizePath(routes.catalog, lang);
+const catalogHref = localizePath(routes.creations, lang);
 
 const origin = Astro.site ?? new URL(Astro.url.origin);
 const productUrl = new URL(localizePath(routes.product(product.slug), lang), origin).href;

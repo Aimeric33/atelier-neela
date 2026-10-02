@@ -75,8 +75,8 @@ const organizationSchema = {
         <h1 class="type-hero">{t.home.heroTitle}</h1>
         <p class="type-lead mt-7 max-w-[42ch]">{t.home.heroLead}</p>
         <div class="mt-9 flex flex-wrap gap-3">
-          <a href={localizePath(routes.catalog, lang)} class="btn btn-primary">{t.common.browseCatalogue}</a>
-          <a href={localizePath(routes.studio, lang)} class="btn btn-outline">{t.home.ctaWorkshop}</a>
+          <a href={localizePath(routes.creations, lang)} class="btn btn-primary">{t.common.browseCatalogue}</a>
+          <a href={localizePath(routes.atelier, lang)} class="btn btn-outline">{t.home.ctaWorkshop}</a>
         </div>
       </div>
     </HeroSlideshow>
@@ -100,7 +100,7 @@ const organizationSchema = {
       <div class="rule" data-reveal="line"></div>
       <div class="mt-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4" data-reveal>
         <h2 class="type-h2 max-w-[14ch]">{t.home.featuredHeading}</h2>
-        <a href={localizePath(routes.catalog, lang)} class="link link-display pb-1.5 text-muted">{t.common.allPieces}</a>
+        <a href={localizePath(routes.creations, lang)} class="link link-display pb-1.5 text-muted">{t.common.allPieces}</a>
       </div>
 
       <div class="mt-12 grid gap-x-8 gap-y-14 md:mt-14 md:grid-cols-3">

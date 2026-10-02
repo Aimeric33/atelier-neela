@@ -26,7 +26,19 @@ const navItems = siteConfig.navigation.map((item) => ({
   label: item.label[lang],
   href: localizePath(item.href, lang),
   active: isActive(item.href),
+  children: item.children?.map((child) => ({
+    label: child.label[lang],
+    href: localizePath(child.href, lang),
+  })),
 }));
+
+// Desktop bar: items with a dropdown sit on the left, right after the name;
+// the other links go on the right. "Accueil" is left out there since the
+// name already links home — the mobile menu still lists every item.
+const dropdownItems = navItems.filter((item) => item.children);
+const linkItems = navItems.filter(
+  (item) => !item.children && item.href !== localizePath(routes.home, lang),
+);
 const cartHref = localizePath(routes.cart, lang);
 
 // One link per other locale, pointing at the same page in that language. The
@@ -45,26 +57,73 @@ const featuredProduct = requireProduct(await getProducts(lang), siteConfig.featu
 const cartIndex = String(navItems.length + 1).padStart(2, "0");
 ---
 
-<header class="site-header sticky top-0 z-50">
-  <nav
-    class="shell flex h-[4.5rem] items-center justify-between gap-6"
-    aria-label={t.common.mainNav}
-  >
-    <a
-      href={localizePath(routes.home, lang)}
-      class="-m-2 p-2 text-[0.9375rem] font-semibold uppercase tracking-[-0.01em] transition-colors hover:text-accent"
-      aria-label={t.common.homeLabel(siteConfig.name)}
-    >
-      {siteConfig.name}
-    </a>
+<header class="shell fixed top-[1.5rem] z-50">
+  <nav class="site-header flex items-stretch justify-between" aria-label={t.common.mainNav}>
+    <div class="flex items-stretch border-r border-accent">
+      <a
+        href={localizePath(routes.home, lang)}
+        class="py-2 px-6 uppercase border-r border-accent hover:text-accent"
+        aria-label={t.common.homeLabel(siteConfig.name)}
+      >
+        {siteConfig.name}
+      </a>
 
-    <ul class="hidden items-center gap-9 md:flex">
+      <ul class="hidden items-center md:flex">
+        {
+          dropdownItems.map((item) => (
+            <li class="group relative">
+              <div
+                class:list={["nav-link", item.active && "is-current"]}
+                aria-current={item.active ? "page" : undefined}
+                aria-haspopup="true"
+              >
+                <span class="inline-flex items-center gap-2">
+                  {item.label}
+                  <svg
+                    class="transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180"
+                    aria-hidden="true"
+                    width="8"
+                    height="5"
+                    viewBox="0 0 8 5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.2"
+                  >
+                    <path d="M.5.5 4 4 7.5.5" />
+                  </svg>
+                </span>
+              </div>
+              {/* pt-4 bridges the gap so the panel doesn't close on the way down. */}
+              <div class="invisible absolute left-1/2 top-full z-10 -translate-x-1/2 pt-4 opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <ul class="min-w-[12rem] border border-ink bg-canvas">
+                  {item.children?.map((child) => (
+                    <li class="border-b border-ink last:border-b-0">
+                      <a
+                        href={child.href}
+                        class="link-display block whitespace-nowrap px-5 py-3.5 transition-colors hover:bg-ink hover:text-canvas"
+                      >
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <ul class="ml-auto border-l border-accent hidden items-stretch md:flex">
       {
-        navItems.map((item) => (
-          <li>
+        linkItems.map((item) => (
+          <li class="flex">
             <a
               href={item.href}
-              class:list={["nav-link link-display", item.active && "is-current"]}
+              class:list={[
+                "nav-link flex items-center border-r border-accent",
+                item.active && "is-current",
+              ]}
               aria-current={item.active ? "page" : undefined}
             >
               {item.label}
@@ -74,19 +133,10 @@ const cartIndex = String(navItems.length + 1).padStart(2, "0");
       }
     </ul>
 
-    <div class="flex items-center gap-1">
+    <div class="flex items-stretch">
       {
-        languageLinks.map((link) => (
-          <a
-            href={link.href}
-            hreflang={link.locale}
-            lang={link.locale}
-            aria-label={link.label}
-            class="link-display -m-2 mr-3 hidden p-2 text-muted transition-colors hover:text-accent md:inline-flex"
-          >
-            {link.short}
-          </a>
-        ))
+        /* Icon only: the accessible name comes from aria-label, kept in step
+          with the count by `data-cart-label`. */
       }
       <a
         href={cartHref}
@@ -95,11 +145,32 @@ const cartIndex = String(navItems.length + 1).padStart(2, "0");
         aria-label={t.common.cartLabel.other.replace("{n}", "0")}
         aria-expanded="false"
         aria-controls="cart-drawer-panel"
-        class="link-display -m-2 inline-flex items-center gap-2 p-2 transition-colors hover:text-accent"
+        class="nav-link inline-flex items-center border-r border-accent transition-colors hover:text-accent"
       >
-        <span class="hidden sm:inline">{t.common.cart}</span>
-        <span class="display text-[0.875rem]" data-cart-count>00</span>
+        <svg width="12" height="14" viewBox="0 0 15 17" fill="none" aria-hidden="true">
+          <path
+            d="M2.20665 4.0289H12.7949L13.6766 16.3747L1.32349 16.3749L2.20665 4.0289Z"
+            stroke="currentColor"
+            stroke-width="1.5"></path>
+          <path
+            d="M4.5 0.625671L10.5 0.624939L10.5 3.99994H4.5L4.5 0.625671Z"
+            stroke="currentColor"
+            stroke-width="1.5"></path>
+        </svg>
       </a>
+      {
+        languageLinks.map((link) => (
+          <a
+            href={link.href}
+            hreflang={link.locale}
+            lang={link.locale}
+            aria-label={link.label}
+            class="nav-link hidden items-center transition-colors hover:text-accent md:inline-flex"
+          >
+            {link.short}
+          </a>
+        ))
+      }
       <button
         type="button"
         class="-mr-2 inline-flex size-10 items-center justify-center transition-colors hover:text-accent md:hidden"
@@ -233,26 +304,16 @@ const cartIndex = String(navItems.length + 1).padStart(2, "0");
 
 <style>
   .nav-link {
-    display: inline-block;
-    color: var(--muted);
+    padding: 0.5rem 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+    font-size: 0.8125rem;
+    font-weight: 500;
     transition: color 240ms ease;
   }
 
   .nav-link:hover {
-    color: var(--ink);
-  }
-
-  .nav-link.is-current {
-    color: var(--ink);
-  }
-
-  /* Active route is marked with an accent rule, not colour alone. */
-  .nav-link.is-current::after {
-    content: "";
-    display: block;
-    height: 1px;
-    margin-top: 5px;
-    background: var(--accent);
+    color: var(--accent);
   }
 
   [data-mobile-menu][hidden] {

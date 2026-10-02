@@ -25,8 +25,10 @@ export const defaultLocale: Locale = "fr";
  */
 export const routes = {
   home: "/",
-  catalog: "/catalogue",
-  studio: "/atelier",
+  creations: "/creations",
+  atelier: "/atelier",
+  blog: "/blog",
+  contact: "/contact",
   cart: "/panier",
   product: (slug: string) => `/produits/${slug}`,
 } as const;
